@@ -46,12 +46,13 @@ def agregar_mensajes_log(texto):
     mensajes_log.append(texto)
 
     #guardar en mensaje en la bd
-    nuevo_registro=Log(texto=texto)
+    nuevo_registro = Log(texto=texto)
     db.session.add(nuevo_registro)
     db.session.commit()
 
+
 #TOKEN DE VERIFICACION PARA LA CONFIGURACION 
-TOKEN_ANDERCORE="ANDERCORE"
+TOKEN_ANDERCODE = "ANDERCODE"
 
 @app.route('/webhook', methods=['GET','POST'])
 def webhook():
@@ -59,20 +60,23 @@ def webhook():
         challenge = verificar_token(request)
         return challenge
     elif request.method == 'POST':
-        response == recibir_mensajes(request)
-        return response
+        reponse = recibir_mensajes(request)
+        return reponse
+
+
 
 def verificar_token(req):
     token = req.args.get('hub.verify_token')
     challenge = req.args.get('hub.challenge')
-    if challenge and token == TOKEN_ANDERCORE:
+
+    if challenge and token == TOKEN_ANDERCODE:
         return challenge
-    else : 
-        return jsonify({'error  ' : ' token invalido' }),401 
+    else:
+        return jsonify({'error':'Token Invalido !!!!'}),401 
 
 def recibir_mensajes(req):
     req = request.get_json()
-    agregar_mensajes_log (req)
+    agregar_mensajes_log(req)
      
     return jsonify({'message':'EVENT_RECEIVED'})
 
